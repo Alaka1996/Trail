@@ -1,4 +1,4 @@
-name: C CI Pipeline
+name: C Project CI
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-test:
     name: Build and Test
     runs-on: ubuntu-latest
 
@@ -18,18 +18,27 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Step 2: Install dependencies
-      - name: Install Dependencies
-        run: sudo apt-get update && sudo apt-get install -y build-essential
+      # Step 2: Set up the environment
+      - name: Install Build Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc make
 
       # Step 3: Build the project
       - name: Build Project
         run: |
-          gcc -o my_program main.c helper.c
+          gcc -o my_program src/main.c src/utils.c
           echo "Build completed."
 
-      # Step 4: Run tests
-      - name: Run Tests
+      # Step 4: Run Tests
+      - name: Run Program for Testing
         run: |
           ./my_program
-          echo "Tests completed."
+          echo "Tests completed successfully."
+
+      # Step 5: Upload Artifacts (Optional)
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: built-program
+          path: ./my_program
