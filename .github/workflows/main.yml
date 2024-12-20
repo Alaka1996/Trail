@@ -1,3 +1,4 @@
+
 name: C Project CI
 
 on:
@@ -27,6 +28,7 @@ jobs:
       # Step 3: Build the project
       - name: Build Project
         run: |
+          make
           gcc -o my_program src/main.c src/utils.c
           echo "Build completed."
 
