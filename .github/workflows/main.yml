@@ -1,6 +1,5 @@
-name: CI/CD Pipeline
+name: C Project CI
 
-# Run this workflow on every push or pull request to the main branch
 on:
   push:
     branches:
@@ -11,22 +10,37 @@ on:
 
 jobs:
   build-and-test:
+    name: Build and Test
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout the code
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-      # Step 1: Install dependencies
-      - name: Install dependencies
-        run: echo "Building"
+      # Step 2: Set up the environment
+      - name: Install Build Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc make
 
-      # Step 2: Run tests (basic example)
-      - name: Run tests
-        run: echo "Testing"
+      # Step 3: Build the project
+      - name: Build Project
+        run: |
+          make
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build-and-test
-    steps:
-      # Step 5: Deploy (example of deploying to a server or hosting service)
-      - name: Dummy Deploy Step
-        run: echo "Deploying to the server..."
+          gcc -o my_program src/main.c src/utils.c
+          echo "Build completed."
+
+      # Step 4: Run Tests
+      - name: Run Program for Testing
+        run: |
+          ./my_program
+          echo "Tests completed successfully."
+
+      # Step 5: Upload Artifacts (Optional)
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: built-program
+          path: ./Trail
