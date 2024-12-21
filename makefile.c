@@ -7,7 +7,7 @@ SRC = src/main.c src/utils.c
 OBJ = $(SRC:.c=.o)
 
 # Output Executable
-TARGET = my_program
+TARGET = Trail
 
 # Default Rule: Build the Program
 all: $(TARGET)
@@ -26,3 +26,6 @@ clean:
 
 # Phony Targets
 .PHONY: all clean
+
+test: $(TARGET)
+	./$(TARGET) && echo "Tests Passed"
