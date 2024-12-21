@@ -29,13 +29,13 @@ jobs:
         run: |
           make
 
-          gcc -o my_program src/main.c src/utils.c
+          gcc -o First try src/main.c src/utils.c
           echo "Build completed."
 
       # Step 4: Run Tests
       - name: Run Program for Testing
         run: |
-          ./my_program
+          ./First try
           echo "Tests completed successfully."
 
       # Step 5: Upload Artifacts (Optional)
