@@ -30,13 +30,13 @@ all: $(TARGET) $(TEST_TARGET)
 $(TARGET): $(SRCS)
 	$(CC) $(CFLAGS) -o $(TARGET) $(SRCS)
 
-# Build the test target (GoogleTest)
-$(TEST_TARGET): $(SRCS) $(TEST_SRCS)
-	$(CXX) $(CXXFLAGS) -I$(GTEST_INCLUDE) -o $(BUILD_DIR)/$(TEST_TARGET) $(SRCS) $(TEST_SRCS) $(GTEST_DIR)/src/gtest_main.cc $(GTEST_DIR)/src/gtest.cc $(GTEST_LIBS)
-
 # Build with AddressSanitizer
 asan: CFLAGS += $(ASAN_FLAGS)
 asan: $(TARGET)
+
+# Build the test target (GoogleTest)
+$(TEST_TARGET): $(SRCS) $(TEST_SRCS)
+	$(CXX) $(CXXFLAGS) -I$(GTEST_INCLUDE) -o $(BUILD_DIR)/$(TEST_TARGET) $(SRCS) $(TEST_SRCS) $(GTEST_DIR)/src/gtest_main.cc $(GTEST_DIR)/src/gtest.cc $(GTEST_LIBS)
 
 # Run cppcheck (static analysis)
 cppcheck:
