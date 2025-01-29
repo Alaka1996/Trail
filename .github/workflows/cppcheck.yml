@@ -1,6 +1,4 @@
-# .github/workflows/cppcheck.yml
-
-name: CppCheck Analysis
+name: CppCheck Analysis (macOS)
 
 on:
   push:
@@ -12,14 +10,21 @@ on:
 
 jobs:
   cppcheck:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest  # macOS runner
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
     - name: Install cppcheck
-      run: sudo apt-get install -y cppcheck
+      run: brew install cppcheck
 
     - name: Run cppcheck
-      run: cppcheck --enable=all --inconclusive --std=c99 .
+      run: |
+        cppcheck --enable=all \
+                 --inconclusive \
+                 --std=c99 \
+                 --check-library \
+                 --platform=unix64 \
+                 --suppress=missingIncludeSystem \
+                 main.c
