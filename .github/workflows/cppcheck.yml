@@ -10,39 +10,40 @@ on:
 
 jobs:
   cppcheck:
-    runs-on: macos-latest  # macOS runner
+    runs-on: macos-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Install dependencies
-      run: |
-        brew install cppcheck
+      - name: Install dependencies
+        run: brew install cppcheck
 
-    - name: Run cppcheck
-      run: |
-        cppcheck --enable=all \
-                 --inconclusive \
-                 --std=c99 \
-                 --check-library \
-                 --platform=unix64 \
-                 --suppress=missingIncludeSystem \
-                 main.c
+      - name: Run cppcheck
+        run: |
+          cppcheck --enable=all \
+                   --inconclusive \
+                   --std=c99 \
+                   --check-library \
+                   --platform=unix64 \
+                   --suppress=missingIncludeSystem \
+                   main.c
 
   address-sanitizer:
-    runs-on: macos-latest  # macOS runner
+    runs-on: macos-latest
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Install compiler (if needed)
-      run: brew install llvm  # Ensures you have Clang with ASan support
+      - name: Install compiler (if needed)
+        run: brew install llvm  # Ensures Clang/GCC with ASan support
 
-    - name: Compile with AddressSanitizer
-      run: |
-        clang -fsanitize=address -g -o my_program main.c
+      - name: Build with AddressSanitizer
+        run: make asan
 
-    - name: Run the program with AddressSanitizer
-      run: |
-        ASAN_OPTIONS=detect_leaks=1 ./my_program
+      - name: Run the program with AddressSanitizer
+        run: ./my_program_asan
+
+      - name: Check for memory leaks (macOS)
+        run: leaks -atExit -- ./my_program_asan
