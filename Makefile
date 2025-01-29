@@ -3,7 +3,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra -O2
 
 # Directories
-GTEST_DIR = /usr/local/include/gtest
+GTEST_DIR = $(PWD)/googletest/googletest
 BUILD_DIR = build
 
 # Source files
@@ -28,7 +28,7 @@ $(TARGET): $(SRCS)
 
 # Build the test target (GoogleTest)
 $(TEST_TARGET): $(SRCS) test_main.cpp
-	$(CC) $(CFLAGS) -o $(BUILD_DIR)/$(TEST_TARGET) $(SRCS) test_main.cpp $(GTEST_LIBS)
+	$(CC) $(CFLAGS) -o $(BUILD_DIR)/$(TEST_TARGET) $(SRCS) test_main.cpp $(GTEST_DIR)/src/gtest_main.cc $(GTEST_DIR)/src/gtest.cc $(GTEST_LIBS)
 
 # Build with AddressSanitizer
 asan: CFLAGS += $(ASAN_FLAGS)
