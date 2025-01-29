@@ -1,4 +1,4 @@
-name: CppCheck Analysis (macOS)
+name: CppCheck & AddressSanitizer Analysis (macOS)
 
 on:
   push:
@@ -16,8 +16,9 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Install cppcheck
-      run: brew install cppcheck
+    - name: Install dependencies
+      run: |
+        brew install cppcheck
 
     - name: Run cppcheck
       run: |
@@ -28,3 +29,20 @@ jobs:
                  --platform=unix64 \
                  --suppress=missingIncludeSystem \
                  main.c
+
+  address-sanitizer:
+    runs-on: macos-latest  # macOS runner
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install compiler (if needed)
+      run: brew install llvm  # Ensures you have Clang with ASan support
+
+    - name: Compile with AddressSanitizer
+      run: |
+        clang -fsanitize=address -g -o my_program main.c
+
+    - name: Run the program with AddressSanitizer
+      run: |
+        ASAN_OPTIONS=detect_leaks=1 ./my_program
