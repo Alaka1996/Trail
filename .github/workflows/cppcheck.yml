@@ -36,21 +36,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Initialize submodules (for GoogleTest)
+        run: git submodule update --init --recursive
+
       - name: Install dependencies
         run: |
           brew install cmake
-          brew install gtest  # Install GoogleTest
 
       - name: Build with GoogleTest
         run: |
-          cmake -DCMAKE_BUILD_TYPE=Debug -S . -B build
-          cmake --build build
+          mkdir -p build
+          cd build
+          cmake -DCMAKE_BUILD_TYPE=Debug -S .. -B .
+          cmake --build .
 
       - name: Run GoogleTest
         run: |
           cd build
           ./my_program_test  # Your test executable
-          
+
   address-sanitizer:
     runs-on: macos-latest
 
