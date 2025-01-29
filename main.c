@@ -38,7 +38,7 @@ void process_data(uint16_t *data){
 }
 
 
-void main()
+int main()
 {
     uint16_t *sensor_data = (uint16_t *)malloc(BUFFER_SIZE * sizeof(uint16_t));
     if(!sensor_data){
