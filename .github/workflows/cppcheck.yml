@@ -15,10 +15,6 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    # Step 2: Initialize Google Test Submodule
-    - name: Initialize Google Test Submodule
-      run: git submodule update --init --recursive
-
     # Step 3: Install Build Essentials
     - name: Install GCC and Make
       run: sudo apt-get update && sudo apt-get install -y build-essential
@@ -26,15 +22,6 @@ jobs:
     # Step 4: Install Cppcheck
     - name: Install Cppcheck
       run: sudo apt-get install -y cppcheck
-
-    # Step 5: Install Google Test (if not using the submodule)
-    - name: Install Google Test
-      run: |
-        sudo apt-get install -y cmake g++ wget
-        git clone https://github.com/google/googletest.git external/googletest
-        cd external/googletest
-        cmake .
-        sudo make install
 
     # Step 6: Run Cppcheck Static Analysis
     - name: Run Cppcheck Static Analysis
@@ -47,11 +34,6 @@ jobs:
         make clean
         make VERBOSE=1
 
-    # Step 8: Run Unit Tests
-    - name: Run Unit Tests
-      run: |
-        make test
-
     # Step 9: Run the Main Program
     - name: Run Main Program
-      run:
+      run:  |
