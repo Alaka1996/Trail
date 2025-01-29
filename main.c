@@ -5,7 +5,7 @@
 #define BUFFER_SIZE 10
 
 void read_sensor_data(uint16_t *data){
-    for(int i = 0; i<=BUFFER_SIZE; i++)
+    for(int i = 0; i<BUFFER_SIZE; i++)
     {
     data[i] = rand() % 1024;
 }
@@ -40,13 +40,16 @@ void process_data(uint16_t *data){
 
 void main()
 {
-    uint16_t *sensor_data = (uint16_t *)malloc(BUFFER_SIZE);
+    uint16_t *sensor_data = (uint16_t *)malloc(BUFFER_SIZE * sizeof(uint16_t));
     if(!sensor_data){
         printf("Memory allocation failed!/n");
-        return;
+        return 1;
     }
     
     read_sensor_data(sensor_data);
     process_data(sensor_data);
     print_data(sensor_data,BUFFER_SIZE);
+    free(sensor_data);
+    return 0;
+    
 }
