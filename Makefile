@@ -1,4 +1,3 @@
-
 # Compiler and flags
 CC = gcc
 CXX = g++
@@ -16,7 +15,7 @@ TEST_SRCS = test_main.cpp
 
 # Target executables
 TARGET = my_program
-TEST_TARGET = my_program_test
+TEST_TARGET = $(TEST_DIR)/my_program_test
 
 # GoogleTest flags
 GTEST_INCLUDE = $(GTEST_DIR)/include
@@ -41,7 +40,7 @@ asan: $(TARGET)
 
 # Build the test target (GoogleTest)
 $(TEST_TARGET): $(SRCS) $(TEST_SRCS)
-	$(CXX) $(CXXFLAGS) -I$(GTEST_INCLUDE) -o $(TEST_DIR)/$(TEST_TARGET) $(SRCS) $(TEST_SRCS) $(GTEST_DIR)/src/gtest_main.cc $(GTEST_DIR)/src/gtest.cc $(GTEST_LIBS)
+	$(CXX) $(CXXFLAGS) -I$(GTEST_INCLUDE) -o $(TEST_TARGET) $(SRCS) $(TEST_SRCS) $(GTEST_DIR)/src/gtest_main.cc $(GTEST_DIR)/src/gtest.cc $(GTEST_LIBS)
 
 # Run cppcheck (static analysis)
 cppcheck:
@@ -49,10 +48,10 @@ cppcheck:
 
 # Clean up
 clean:
-	rm -f $(TARGET) $(TEST_DIR)/$(TEST_TARGET)
+	rm -f $(TARGET) $(TEST_TARGET)
 
 # Run unit tests (GoogleTest)
-test: $(TEST_DIR)/$(TEST_TARGET)
-	./$(TEST_DIR)/$(TEST_TARGET)
+test: $(TEST_TARGET)
+	./$(TEST_TARGET)
 
 .PHONY: all cppcheck clean asan test
