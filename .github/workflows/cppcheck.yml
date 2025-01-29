@@ -16,6 +16,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Initialize submodules (for GoogleTest)
+        run: git submodule update --init --recursive
+
       - name: Install dependencies
         run: brew install cppcheck
 
@@ -41,18 +44,13 @@ jobs:
 
       - name: Install dependencies
         run: |
-          brew install cmake
+          brew install gcc
 
-      - name: Build with GoogleTest
-        run: |
-          mkdir -p build
-          cd build
-          cmake -DCMAKE_BUILD_TYPE=Debug -S .. -B .
-          cmake --build .
+      - name: Build the project
+        run: make
 
       - name: Run GoogleTest
         run: |
-          cd build
           ./my_program_test  # Your test executable
 
   address-sanitizer:
@@ -69,7 +67,7 @@ jobs:
         run: make asan
 
       - name: Run the program with AddressSanitizer
-        run: ./my_program_asan
+        run: ./my_program
 
       - name: Check for memory leaks (macOS)
-        run: leaks -atExit -- ./my_program_asan
+        run: leaks -atExit -- ./my_program
