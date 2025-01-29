@@ -46,4 +46,8 @@ cppcheck:
 clean:
 	rm -f $(TARGET) $(BUILD_DIR)/$(TEST_TARGET)
 
-.PHONY: all cppcheck clean asan
+# Run unit tests (GoogleTest)
+test: $(BUILD_DIR)/$(TEST_TARGET)
+	./$(BUILD_DIR)/$(TEST_TARGET)
+
+.PHONY: all cppcheck clean asan test
