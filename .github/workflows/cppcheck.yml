@@ -67,7 +67,7 @@ jobs:
         run: make asan
 
       - name: Run the program with AddressSanitizer
-        run: ./my_program
+        run: ./my_program  # Use the correct target executable name
 
       - name: Check for memory leaks (macOS)
         run: leaks -atExit -- ./my_program
