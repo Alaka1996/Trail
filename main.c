@@ -26,7 +26,6 @@ void print_data(uint16_t *data, int size){
 }
 
 void process_data(uint16_t *data){
-    uint16_t filtered_data[BUFFER_SIZE];
     int avg = calculate_average(data, BUFFER_SIZE);
     printf("Average sensor value:%d/n",avg);
     
