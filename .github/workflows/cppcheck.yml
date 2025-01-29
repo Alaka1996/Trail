@@ -1,4 +1,4 @@
-name: CppCheck, GoogleTest & AddressSanitizer Analysis (macOS)
+name: Build, Test, and Static Analysis
 
 on:
   push:
@@ -9,65 +9,52 @@ on:
       - main
 
 jobs:
-  cppcheck:
-    runs-on: macos-latest
+  build-and-test:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    # Step 1: Checkout the code
+    - name: Checkout Code
+      uses: actions/checkout@v3
 
-      - name: Initialize submodules (for GoogleTest)
-        run: git submodule update --init --recursive
+    # Step 2: Install Build Essentials
+    - name: Install GCC and Make
+      run: sudo apt-get update && sudo apt-get install -y build-essential
 
-      - name: Install dependencies
-        run: brew install cppcheck
+    # Step 3: Install Cppcheck
+    - name: Install Cppcheck
+      run: sudo apt-get install -y cppcheck
 
-      - name: Run cppcheck
-        run: |
-          cppcheck --enable=all \
-                   --inconclusive \
-                   --std=c99 \
-                   --check-library \
-                   --platform=unix64 \
-                   --suppress=missingIncludeSystem \
-                   main.c
+    # Step 4: Initialize GoogleTest Submodule (If using submodule method)
+    - name: Initialize GoogleTest Submodule
+      run: git submodule update --init --recursive
 
-  googletest:
-    runs-on: macos-latest
+    # Step 5: Run Cppcheck Static Analysis
+    - name: Run Cppcheck Static Analysis
+      run: |
+        cppcheck --enable=all --inconclusive --std=c99 --check-library --platform=unix64 --suppress=missingIncludeSystem main.c
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    # Step 6: Build the Project with AddressSanitizer
+    - name: Build the Project with AddressSanitizer
+      run: make asan
 
-      - name: Initialize submodules (for GoogleTest)
-        run: git submodule update --init --recursive
+    # Step 7: Run Unit Tests
+    - name: Run Unit Tests
+      run: |
+        make test
 
-      - name: Install dependencies
-        run: |
-          brew install gcc
+    # Step 8: Run the Main Program with AddressSanitizer
+    - name: Run Main Program with AddressSanitizer
+      run: ./my_program_asan
 
-      - name: Build the project
-        run: make
+    # Step 9: Display Program Output
+    - name: Display Program Output
+      run: cat test_output.txt
 
-      - name: Run GoogleTest
-        run: |
-          ./my_program_test  # Your test executable
-
-  address-sanitizer:
-    runs-on: macos-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Install compiler (if needed)
-        run: brew install llvm
-
-      - name: Build with AddressSanitizer
-        run: make asan
-
-      - name: Run the program with AddressSanitizer
-        run: ./my_program  # Use the correct target executable name
-
-      - name: Check for memory leaks (macOS)
-        run: leaks -atExit -- ./my_program
+    # Step 10: Check for Warnings in Program Output
+    - name: Check for Warnings
+      run: |
+        if grep -q "Warning:" test_output.txt; then
+          echo "Warnings found in output!"
+          exit 1
+        fi
