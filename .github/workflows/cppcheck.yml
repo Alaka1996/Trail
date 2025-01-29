@@ -1,4 +1,4 @@
-name: CppCheck & AddressSanitizer Analysis (macOS)
+name: CppCheck, GoogleTest & AddressSanitizer Analysis (macOS)
 
 on:
   push:
@@ -29,6 +29,28 @@ jobs:
                    --suppress=missingIncludeSystem \
                    main.c
 
+  googletest:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          brew install cmake
+          brew install gtest  # Install GoogleTest
+
+      - name: Build with GoogleTest
+        run: |
+          cmake -DCMAKE_BUILD_TYPE=Debug -S . -B build
+          cmake --build build
+
+      - name: Run GoogleTest
+        run: |
+          cd build
+          ./my_program_test  # Your test executable
+          
   address-sanitizer:
     runs-on: macos-latest
 
@@ -37,7 +59,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install compiler (if needed)
-        run: brew install llvm  # Ensures Clang/GCC with ASan support
+        run: brew install llvm
 
       - name: Build with AddressSanitizer
         run: make asan
