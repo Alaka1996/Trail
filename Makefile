@@ -1,19 +1,23 @@
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -O2
+CXX = g++
+CFLAGS = -Wall -Wextra -O2 -g
+CXXFLAGS = -Wall -Wextra -O2 -g -std=c++11
 
 # Directories
 GTEST_DIR = $(PWD)/googletest/googletest
 BUILD_DIR = build
 
 # Source files
-SRCS = main.c test_main.cpp
+SRCS = main.c
+TEST_SRCS = test_main.cpp
 
 # Target executables
 TARGET = my_program
 TEST_TARGET = my_program_test
 
 # GoogleTest flags
+GTEST_INCLUDE = $(GTEST_DIR)/include
 GTEST_LIBS = -lgtest -lgtest_main -pthread
 
 # AddressSanitizer flags
@@ -27,8 +31,8 @@ $(TARGET): $(SRCS)
 	$(CC) $(CFLAGS) -o $(TARGET) $(SRCS)
 
 # Build the test target (GoogleTest)
-$(TEST_TARGET): $(SRCS) test_main.cpp
-	$(CC) $(CFLAGS) -o $(BUILD_DIR)/$(TEST_TARGET) $(SRCS) test_main.cpp $(GTEST_DIR)/src/gtest_main.cc $(GTEST_DIR)/src/gtest.cc $(GTEST_LIBS)
+$(TEST_TARGET): $(SRCS) $(TEST_SRCS)
+	$(CXX) $(CXXFLAGS) -I$(GTEST_INCLUDE) -o $(BUILD_DIR)/$(TEST_TARGET) $(SRCS) $(TEST_SRCS) $(GTEST_DIR)/src/gtest_main.cc $(GTEST_DIR)/src/gtest.cc $(GTEST_LIBS)
 
 # Build with AddressSanitizer
 asan: CFLAGS += $(ASAN_FLAGS)
