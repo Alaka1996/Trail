@@ -1,3 +1,4 @@
+
 # Compiler and flags
 CC = gcc
 CXX = g++
@@ -7,6 +8,7 @@ CXXFLAGS = -Wall -Wextra -O2 -g -std=c++11
 # Directories
 GTEST_DIR = $(PWD)/googletest/googletest
 BUILD_DIR = build
+TEST_DIR = $(BUILD_DIR)/test
 
 # Source files
 SRCS = main.c
@@ -23,6 +25,9 @@ GTEST_LIBS = -lgtest -lgtest_main -pthread
 # AddressSanitizer flags
 ASAN_FLAGS = -fsanitize=address -fno-omit-frame-pointer
 
+# Create the build directory
+$(shell mkdir -p $(BUILD_DIR)/test)
+
 # Default target
 all: $(TARGET) $(TEST_TARGET)
 
@@ -36,7 +41,7 @@ asan: $(TARGET)
 
 # Build the test target (GoogleTest)
 $(TEST_TARGET): $(SRCS) $(TEST_SRCS)
-	$(CXX) $(CXXFLAGS) -I$(GTEST_INCLUDE) -o $(BUILD_DIR)/$(TEST_TARGET) $(SRCS) $(TEST_SRCS) $(GTEST_DIR)/src/gtest_main.cc $(GTEST_DIR)/src/gtest.cc $(GTEST_LIBS)
+	$(CXX) $(CXXFLAGS) -I$(GTEST_INCLUDE) -o $(TEST_DIR)/$(TEST_TARGET) $(SRCS) $(TEST_SRCS) $(GTEST_DIR)/src/gtest_main.cc $(GTEST_DIR)/src/gtest.cc $(GTEST_LIBS)
 
 # Run cppcheck (static analysis)
 cppcheck:
@@ -44,10 +49,10 @@ cppcheck:
 
 # Clean up
 clean:
-	rm -f $(TARGET) $(BUILD_DIR)/$(TEST_TARGET)
+	rm -f $(TARGET) $(TEST_DIR)/$(TEST_TARGET)
 
 # Run unit tests (GoogleTest)
-test: $(BUILD_DIR)/$(TEST_TARGET)
-	./$(BUILD_DIR)/$(TEST_TARGET)
+test: $(TEST_DIR)/$(TEST_TARGET)
+	./$(TEST_DIR)/$(TEST_TARGET)
 
 .PHONY: all cppcheck clean asan test
